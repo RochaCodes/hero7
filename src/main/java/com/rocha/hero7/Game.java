@@ -59,6 +59,15 @@ public class Game {
             hero.setPosition(newPosition);
         }
     }
+    private void moveHero(Position position){
+        if (canHeroMove(position)){
+            hero.setPosition(position);
+        }
+    }
+    private boolean canHeroMove(Position position) {
+        return position.getX() >= 0 && position.getY() >= 0 && position.getX() < screen.getTerminalSize().getColumns() && position.getY() < screen.getTerminalSize().getRows();
+    }
+
 
 
     public void run() {
