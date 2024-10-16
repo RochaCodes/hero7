@@ -1,6 +1,9 @@
 package com.rocha.hero7;
 
-import com.googlecode.lanterna.SGR;
+import com.googlecode.lanterna.graphics.TextGraphics;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
@@ -10,15 +13,30 @@ public class Arena {
     private int width;
     private int height;
     private Hero hero;
-
-    // Constructor initializes the arena size and places the hero inside it
+    private List<Wall> walls;
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
-        this.hero = new Hero(10, 10); // Start position can be adjusted as needed
+        this.hero = new Hero(10, 10);
+        this.walls = new ArrayList<>();
+        createWalls();
+
+    }
+    private void createWalls() {
+        for (int x = 0; x < width; x++) {
+            walls.add(new Wall(x, height));
+            walls.add(new Wall(x, 0));
+        }
+        for (int y = 1; y < height - 1; y++) {
+            walls.add(new Wall(0, y));
+            walls.add(new Wall(width, y));
+
+        }
+
+
     }
 
-    // Method to move the hero to a new position
+
     public void moveHero(Position position) {
         if (canHeroMove(position)) {
             hero.setPosition(position);
@@ -27,9 +45,17 @@ public class Arena {
 
 
     private boolean canHeroMove(Position position) {
-        return position.getX() >= 0 && position.getX() < width &&
-                position.getY() >= 0 && position.getY() < height;
+        if (position.getX() < 0 || position.getX() >= width || position.getY() < 0 || position.getY() >= height) {
+            return false;
+        }
+        for (Wall wall : walls) {
+            if (wall.getPosition().equals(position)) {
+                return false;
+            }
+        }
+        return true;
     }
+
 
 
     public void draw(TextGraphics graphics) {
@@ -37,6 +63,9 @@ public class Arena {
         graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
 
         hero.draw(graphics);
+        for (Wall wall: walls){
+            wall.draw(graphics);
+        }
     }
 
     public void moveUp() {
