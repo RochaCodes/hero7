@@ -8,19 +8,50 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
+import java.util.Random;
+
 
 public class Arena {
     private int width;
     private int height;
     private Hero hero;
     private List<Wall> walls;
+    private List<Coin> coins;
+
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
         this.hero = new Hero(10, 10);
         this.walls = new ArrayList<>();
+        this.coins = createCoins();
         createWalls();
 
+    }
+    private List<Coin> createCoins() {
+        List<Coin> coins = new ArrayList<>();
+        Random random = new Random();
+
+        while (coins.size() < 5) {
+            int x = random.nextInt(width - 2) + 1;
+            int y = random.nextInt(height - 2) + 1;
+            Position position = new Position(x, y);
+
+
+            boolean isValid = true;
+            if (position.equals(hero.getPosition())) {
+                isValid = false;
+            }
+            for (Coin coin : coins) {
+                if (coin.getPosition().equals(position)) {
+                    isValid = false;
+                    break;
+                }
+            }
+            if (isValid) {
+                coins.add(new Coin(x, y));
+            }
+        }
+        return coins;
     }
     private void createWalls() {
         for (int x = 0; x < width; x++) {
@@ -36,10 +67,14 @@ public class Arena {
 
     }
 
+    private void retrieveCoins() {
+        coins.removeIf(coin -> coin.getPosition().equals(hero.getPosition()));
+    }
 
     public void moveHero(Position position) {
         if (canHeroMove(position)) {
             hero.setPosition(position);
+            retrieveCoins();
         }
     }
 
@@ -65,6 +100,9 @@ public class Arena {
         hero.draw(graphics);
         for (Wall wall: walls){
             wall.draw(graphics);
+        }
+        for (Coin coin: coins) {
+            coin.draw(graphics);
         }
     }
 
