@@ -16,11 +16,13 @@ public class Game {
     private int x = 10;
     private int y = 10;
     private Screen screen;
+    private Arena arena;
     private Hero hero;
 
 
-    public Game() {
+    public Game(int width, int height) {
         this.hero = new Hero(10,10);
+        this.arena = new Arena(width, height);
         try {
             DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
             screen = terminalFactory.createScreen();
@@ -34,41 +36,30 @@ public class Game {
 
     private void draw() throws IOException {
         screen.clear();
-        hero.draw(screen.newTextGraphics());
+        TextGraphics graphics = screen.newTextGraphics();
+        arena.draw(graphics);
         screen.refresh();
     }
     private void processKey(KeyStroke key) {
-        Position newPosition = null;
+
         switch (key.getKeyType()) {
             case ArrowUp:
-                newPosition = hero.moveUp();
+                arena.moveUp();
                 break;
             case ArrowDown:
-                newPosition = hero.moveDown();
+                arena.moveDown();
                 break;
             case ArrowLeft:
-                newPosition = hero.moveLeft();
+                arena.moveLeft();
                 break;
             case ArrowRight:
-                newPosition = hero.moveRight();
+                arena.moveRight();
                 break;
             default:
                 break;
-        }
-        if (newPosition != null) {
-            hero.setPosition(newPosition);
-        }
-    }
-    private void moveHero(Position position){
-        if (canHeroMove(position)){
-            hero.setPosition(position);
-        }
-    }
-    private boolean canHeroMove(Position position) {
-        return position.getX() >= 0 && position.getY() >= 0 && position.getX() < screen.getTerminalSize().getColumns() && position.getY() < screen.getTerminalSize().getRows();
-    }
 
-
+        }
+    }
 
     public void run() {
         try {
@@ -90,7 +81,7 @@ public class Game {
     }
 
     public static void main(String[] args) {
-        Game game = new Game();
+        Game game = new Game(40, 20);
         game.run();
     }
 }
