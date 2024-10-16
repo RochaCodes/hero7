@@ -7,7 +7,7 @@ group = 'com.rocha.hero7'
 version = '1.0-SNAPSHOT'
 
 application{
-    mainClass.set("Application")
+    mainClass.set("com.rocha.hero7.Application")
 }
 repositories {
     mavenCentral()
