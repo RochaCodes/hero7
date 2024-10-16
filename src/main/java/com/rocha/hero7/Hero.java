@@ -1,35 +1,40 @@
 package com.rocha.hero7;
 
-public class Hero {
-    private int x;
-    private int y;
-    public Hero (int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    public int getX() {
-        return x;
-    }
-    public void setX(int x) {
-        this.x = x;
-    }
-    public int getY() {
-        return y;
-    }
-    public void setY(int y) {
-        this.y = y;
-    }
-    public void moveUp() {
-        y = Math.max(0, y -1);
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.graphics.TextGraphics;
 
+public class Hero {
+    private Position position;
+
+    public Hero(int x, int y) {
+        this.position = new Position(x, y);
     }
-    public void moveDown(int maxHeight) {
-        y = Math.min(maxHeight - 1, y + 1);
+
+    public Position getPosition() {
+        return position;
     }
-    public void moveLeft(){
-        x = Math.max(0, x - 1);
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
-    public void moveRight(int maxWidth){
-        x = Math.min(maxWidth - 1, x + 1);
+
+    public Position moveUp() {
+        return new Position(position.getX(), position.getY() - 1);
+    }
+
+    public Position moveDown() {
+        return new Position(position.getX(), position.getY() + 1);
+    }
+
+    public Position moveLeft() {
+        return new Position(position.getX() - 1, position.getY());
+    }
+
+    public Position moveRight() {
+        return new Position(position.getX() + 1, position.getY());
+    }
+
+    public void draw(TextGraphics graphics) {
+        graphics.putString(new TerminalPosition(position.getX(), position.getY()), "X");
     }
 }

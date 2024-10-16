@@ -20,7 +20,7 @@ public class Game {
 
 
     public Game() {
-        hero = new Hero(10, 10);
+        this.hero = new Hero(10,10);
         try {
             DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
             screen = terminalFactory.createScreen();
@@ -34,27 +34,30 @@ public class Game {
 
     private void draw() throws IOException {
         screen.clear();
-        screen.setCharacter(hero.getX(), hero.getY(), TextCharacter.fromCharacter('X')[0]);
+        hero.draw(screen.newTextGraphics());
         screen.refresh();
     }
     private void processKey(KeyStroke key) {
+        Position newPosition = null;
         switch (key.getKeyType()) {
             case ArrowUp:
-                hero.moveUp();
+                newPosition = hero.moveUp();
                 break;
             case ArrowDown:
-                hero.moveDown(screen.getTerminalSize().getRows());
+                newPosition = hero.moveDown();
                 break;
             case ArrowLeft:
-                hero.moveLeft();
+                newPosition = hero.moveLeft();
                 break;
             case ArrowRight:
-                hero.moveRight(screen.getTerminalSize().getColumns());
+                newPosition = hero.moveRight();
                 break;
             default:
                 break;
         }
-
+        if (newPosition != null) {
+            hero.setPosition(newPosition);
+        }
     }
 
 
